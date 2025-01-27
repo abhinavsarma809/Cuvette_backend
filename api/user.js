@@ -95,7 +95,7 @@ app.put("/update/:id", async (req, res) => {
             return res.status(400).json({ message: "User not found" });
         }
         
-        // Update user details
+        
         if (email) user.email = email;
         if (name) user.name = name;
         

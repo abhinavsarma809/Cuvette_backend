@@ -5,22 +5,21 @@ const UAParser = require('ua-parser-js');
 
 router.post('/create', async (req, res) => {
   const { originalUrl, expiryDate, remarks, userId } = req.body;
-  
-  // Get the user's IP address and device info
+
   const ipAddress = req.ip;
-  const userDevice = req.headers['user-agent'];  // This will capture the user's device type
+  const userDevice = req.headers['user-agent'];  
   
-  // Use UAParser to extract the OS
+ 
   const parser = new UAParser();
   const result = parser.setUA(userDevice).getResult();
-  const osName = result.os.name;  // Extracts the operating system name
+  const osName = result.os.name;  
 
   if (!originalUrl || !expiryDate || !remarks) {
     return res.status(400).json({ message: 'Original URL, expiry date, and remarks are required' });
   }
 
   try {
-    const { nanoid } = await import('nanoid'); // Dynamically import nanoid
+    const { nanoid } = await import('nanoid'); 
     const shortId = nanoid(6);
     const host = req.get('host');
     const shortUrl = `${req.protocol}://${host}/${shortId}`;
@@ -57,7 +56,7 @@ router.get('/links/:userId', async (req, res) => {
   }
 });
 
-// GET route to handle redirection for shortened URLs
+
 router.get('/:shortId', async (req, res) => {
   const { shortId } = req.params;
 
@@ -81,7 +80,7 @@ router.get('/:shortId', async (req, res) => {
 
     await url.save();
 
-    console.log('URL visited: ', url); // Debug log
+    console.log('URL visited: ', url); 
 
     return res.redirect(url.originalUrl);
   } catch (err) {
