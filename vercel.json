@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "api/link.js", "use": "@vercel/node" },
+      { "src": "api/user.js", "use": "@vercel/node" },
+      { "src": "index.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/api/link/create/links/shortId/delete/update/analytics/date/analytics/device/userId/id/(.*)", "dest": "api/link.js" },
+
+      { "src": "/api/user/sigin/signup/update(.*)", "dest": "api/user.js" },
+      { "src": "/(.*)", "dest": "index.js" }
+    ]
+  } 

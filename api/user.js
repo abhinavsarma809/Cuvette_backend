@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const User = require('../Schemas/userSchema');
-const bcrypt = require('bcrypt');  
+const bcrypt = require('bcryptjs');  
 const env = require('dotenv');
 const jwt = require('jsonwebtoken');
 

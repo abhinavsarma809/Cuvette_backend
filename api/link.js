@@ -72,9 +72,16 @@ router.get('/:shortId', async (req, res) => {
       return res.status(410).json({ message: 'URL has expired' });
     }
 
-    // Increment the visits count
     url.visits += 1;
+
+    const userDevice = req.headers['user-agent'];
+    const parser = new UAParser();
+    const osName = parser.setUA(userDevice).getResult().os.name;
+    url.clicks.push({ date: new Date(), device: osName });
+
     await url.save();
+
+    console.log('URL visited: ', url); // Debug log
 
     return res.redirect(url.originalUrl);
   } catch (err) {
@@ -82,6 +89,11 @@ router.get('/:shortId', async (req, res) => {
     res.status(500).json({ message: 'Failed to redirect' });
   }
 });
+
+
+
+
+
 
 
 router.delete('/delete/:id', async (req, res) => {
@@ -127,6 +139,49 @@ router.put('/update/:id', async (req, res) => {
   }
 });
 
+router.get('/analytics/date/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const links = await URL.find({ userId });
+    const analytics = links.map((link) => ({
+      shortUrl: link.shortUrl,
+      clicksByDate: link.clicks.reduce((acc, click) => {
+        const date = click.date.toISOString().split('T')[0];
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {}),
+    }));
+
+    console.log('Date-wise analytics: ', analytics);
+    res.status(200).json(analytics);
+  } catch (err) {
+    console.error('Error fetching date-wise analytics:', err);
+    res.status(500).json({ message: 'Failed to fetch date-wise analytics' });
+  }
+});
+
+router.get('/analytics/device/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const links = await URL.find({ userId });
+    const analytics = links.map((link) => ({
+      shortUrl: link.shortUrl,
+      clicksByDevice: link.clicks.reduce((acc, click) => {
+        if (click.device) {
+          acc[click.device] = (acc[click.device] || 0) + 1;
+        }
+        return acc;
+      }, {}),
+    }));
+    
+    res.status(200).json(analytics);
+  } catch (err) {
+    console.error('Error fetching device-wise analytics:', err);
+    res.status(500).json({ message: 'Failed to fetch device-wise analytics' });
+  }
+});
 
 
 module.exports = router;
