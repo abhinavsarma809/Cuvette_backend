@@ -7,17 +7,18 @@ const linkRoutes = require("./api/link");
 const cors = require('cors');
 
 env.config(); 
-app.use(
-    cors({
-        origin:"http://localhost:5173"
-    })
-
-
-)
-
-app.use(express.json());
 const MONGO_URL = process.env.MONGO_URL;
 const Port = process.env.Port||3000;
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(express.json());
+
 
 app.get("/",(req,res)=>{
     res.send("Hello world");

@@ -8,7 +8,7 @@
     "routes": [
       { "src": "/api/link/create/links/shortId/delete/update/analytics/date/analytics/device/userId/id/(.*)", "dest": "api/link.js" },
 
-      { "src": "/api/user/sigin/signup/update(.*)", "dest": "api/user.js" },
+      { "src": "/api/user/signin/signup/update/(.*)", "dest": "api/user.js" },
       { "src": "/(.*)", "dest": "index.js" }
     ]
   } 
